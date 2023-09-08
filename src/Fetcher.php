@@ -27,12 +27,12 @@ class Fetcher
 
         $this->browser->followRedirects(false);
 
-        if ($data) {
-            $crawler = $this->browser->request('POST', $url, [], [], [
+        if ($this->data) {
+            $crawler = $this->browser->request('POST', $this->url, [], [], [
                 'CONTENT_TYPE' => 'application/json',
-            ], json_encode($data));
+            ], json_encode($this->data));
         } else {
-            $crawler = $this->browser->request('GET', $url);
+            $crawler = $this->browser->request('GET', $this->url);
         }
 
         $this->crawler = new CrawlerWrapper($crawler);
