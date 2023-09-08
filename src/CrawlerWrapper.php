@@ -6,9 +6,9 @@ namespace AlexKassel\Fetcher;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-final class CrawlerWrapper
+class CrawlerWrapper
 {
-    private Crawler $crawler;
+    protected Crawler $crawler;
 
     public function __construct(mixed $mixed)
     {
@@ -28,7 +28,7 @@ final class CrawlerWrapper
         return $this->crawler->count() ? $this->crawler->attr($attr) : $default;
     }
 
-    public function __call(string $name, array $args)
+    public function __call(string $name, array $args): static|string
     {
         $result = $this->crawler->$name(...$args);
 
