@@ -6,36 +6,72 @@ namespace AlexKassel\Fetcher;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-class CrawlerWrapper
+class CrawlerWrapper extends Crawler
 {
-    protected Crawler $crawler;
-
-    public function __construct(mixed $mixed)
+    public function each(\Closure $closure, bool $asAssoc = false): array
     {
-        if ($mixed instanceof Crawler) {
-            $this->crawler = $mixed;
-        } else {
-            if ($mixed instanceof $this) {
-                $mixed = $mixed->html('');
+        if (! $asAssoc) {
+            return parent::each($closure);
+        }
+
+        $data = [];
+        foreach(parent::each($closure) as $next) {
+            if (! is_array($next)) {
+                $data[] = $next;
+            } elseif (is_string($next[0]) && isset($next[1])) {
+                $data[$next[0]] = $next[1];
+            } else {
+                $data[] = $next[0];
             }
-
-            $this->crawler = new Crawler($mixed);
-        }
-    }
-
-    public function attr(string $attr, ?string $default = null): ?string
-    {
-        return $this->crawler->count() ? $this->crawler->attr($attr) : $default;
-    }
-
-    public function __call(string $name, array $args): static|string
-    {
-        $result = $this->crawler->$name(...$args);
-
-        if ($result instanceof Crawler) {
-            return new static($result);
         }
 
-        return $result;
+        return $data;
+    }
+
+    public function texts(): array
+    {
+        return $this->each(fn($node) => $node->text());
+    }
+
+    public function text(string $default = null, bool $normalizeWhitespace = true): string
+    {
+        $default ??= '';
+
+        return $this->count()
+            ? parent::text($default, $normalizeWhitespace)
+            : $default
+            ;
+    }
+
+    public function innerText(string $default = null, bool $normalizeWhitespace = true): string
+    {
+        $default ??= '';
+
+        return $this->count()
+            ? (parent::innerText($normalizeWhitespace) ?: $default)
+            : $default
+            ;
+    }
+
+    public function html(string $default = null, bool $normalizeWhitespace = true): string
+    {
+        $default ??= '';
+
+        if ($this->count()) {
+            return $normalizeWhitespace
+                ? trim(preg_replace('/\s+/', ' ', parent::html($default)))
+                : parent::html($default)
+                ;
+        }
+
+        return $default;
+    }
+
+    public function attr(string $attribute, string $default = null): string
+    {
+        return $this->count()
+            ? (parent::attr($attribute) ?? $default)
+            : $default
+            ;
     }
 }

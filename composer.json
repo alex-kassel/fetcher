@@ -1,7 +1,7 @@
 {
     "name": "alex-kassel/fetcher",
     "description": "A wrapper for symfony's browser-kit and crawler",
-    "license": "proprietary",
+    "license": "",
     "require": {
         "php": "^8.2",
         "symfony/browser-kit": "^6.3",
@@ -11,10 +11,13 @@
         "phpunit/phpunit": "^10.1"
     },
     "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
         "psr-4": {
             "AlexKassel\\Fetcher\\": "src/"
         }
-    }
+    },
     "autoload-dev": {
         "psr-4": {
             "AlexKassel\\Fetcher\\Tests\\": "tests/"

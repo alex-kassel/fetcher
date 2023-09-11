@@ -35,7 +35,7 @@ class Fetcher
             $crawler = $this->browser->request('GET', $this->url);
         }
 
-        $this->crawler = new CrawlerWrapper($crawler);
+        $this->crawler = new CrawlerWrapper($crawler->html(''));
         $this->response = $this->browser->getResponse();
     }
 
@@ -43,7 +43,7 @@ class Fetcher
     {
         return new self($url, $data);
     }
-
+/*
     public function getStatusCode(): int
     {
         return $this->response->getStatusCode();
@@ -58,14 +58,15 @@ class Fetcher
     {
         return $this->response->getContent();
     }
-
+*/
     public function getJson(bool $asArray = false): array|object
     {
         return json_decode($this->response->getContent(), $asArray);
     }
 
-    public function __call(string $name, array $args)
+    public function __call(string $method, array $args)
     {
-        return $this->crawler->$name(...$args);
+        $class = ['response', 'crawler'][(int) method_exists($this->crawler, $method)];
+        return $this->$class->$method(...$args);
     }
 }
