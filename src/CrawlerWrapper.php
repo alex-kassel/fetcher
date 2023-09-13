@@ -67,7 +67,7 @@ class CrawlerWrapper extends Crawler
         return $default;
     }
 
-    public function attr(string $attribute, string $default = null): string
+    public function attr(string $attribute, string $default = null): ?string
     {
         return $this->count()
             ? (parent::attr($attribute) ?? $default)
