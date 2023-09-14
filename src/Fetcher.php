@@ -11,7 +11,7 @@ use Symfony\Component\BrowserKit\Response;
 class Fetcher
 {
     protected HttpBrowser $browser;
-    protected CrawlerWrapper $crawler;
+    protected Crawler $crawler;
     protected Response $response;
 
     public function __construct(
@@ -35,7 +35,7 @@ class Fetcher
             $crawler = $this->browser->request('GET', $this->url);
         }
 
-        $this->crawler = new CrawlerWrapper($crawler->html(''));
+        $this->crawler = new Crawler($crawler->html(''));
         $this->response = $this->browser->getResponse();
     }
 
