@@ -43,7 +43,7 @@ class Fetcher
     {
         return new self($url, $data);
     }
-/*
+
     public function getStatusCode(): int
     {
         return $this->response->getStatusCode();
@@ -58,7 +58,7 @@ class Fetcher
     {
         return $this->response->getContent();
     }
-*/
+
     public function getJson(bool $asArray = false): array|object
     {
         return json_decode($this->response->getContent(), $asArray);
