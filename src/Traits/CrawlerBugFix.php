@@ -6,65 +6,47 @@ namespace AlexKassel\Fetcher\Traits;
 
 trait CrawlerBugFix
 {
-    public function each(\Closure $closure, bool $asAssoc = false): array
+    public bool $nullInsteadOfExceptionIfNodeListIsEmpty = true;
+
+    private function handle(\Closure $closure)
     {
-        if (! $asAssoc) {
-            return parent::each($closure);
-        }
-
-        $data = [];
-        foreach(parent::each($closure) as $next) {
-            if (! is_array($next)) {
-                $data[] = $next;
-            } elseif (is_string($next[0]) && isset($next[1])) {
-                $data[$next[0]] = $next[1];
-            } else {
-                $data[] = $next[0];
-            }
-        }
-
-        return $data;
+        return $this->count() || ! $this->nullInsteadOfExceptionIfNodeListIsEmpty
+            ? $closure()
+            : null
+            ;
     }
 
     public function text(string $default = null, bool $normalizeWhitespace = true): string
     {
-        $default ??= '';
-
-        return $this->count()
-            ? parent::text($default, $normalizeWhitespace)
-            : $default
-            ;
+        return (string) $this->handle(function () use ($default, $normalizeWhitespace) {
+            return parent::text($default, $normalizeWhitespace);
+        });
     }
 
     public function innerText(string $default = null, bool $normalizeWhitespace = true): string
     {
-        $default ??= '';
-
-        return $this->count()
-            ? (parent::innerText($normalizeWhitespace) ?: $default)
-            : $default
-            ;
+        return (string) $this->handle(function () use ($default, $normalizeWhitespace) {
+            return parent::innerText($normalizeWhitespace) ?: $default;
+        });
     }
 
     public function html(string $default = null, bool $normalizeWhitespace = true): string
     {
-        $default ??= '';
-
-        if ($this->count()) {
+        return (string) $this->handle(function () use ($default, $normalizeWhitespace) {
             return $normalizeWhitespace
-                ? trim(preg_replace('/\s+/', ' ', parent::html($default)))
+                ? parent::html($default) // TODO: normalizeWhitespace()
                 : parent::html($default)
                 ;
-        }
-
-        return $default;
+        });
     }
 
     public function attr(string $attribute, string $default = null): ?string
     {
-        return $this->count()
-            ? (parent::attr($attribute) ?? $default)
-            : $default
-            ;
+        return $this->handle(function () use ($attribute, $default) {
+             return ($attributeValue = parent::attr($attribute))
+                 ? $attributeValue
+                 : (is_null($attributeValue) ? null : $default)
+                 ;
+        });
     }
 }
