@@ -34,7 +34,7 @@ trait ExistingMethodsEnhancement
     {
         return (string) $this->handle(function () use ($default, $normalizeWhitespace) {
             return $normalizeWhitespace
-                ? parent::html($default) // TODO: normalizeWhitespace()
+                ? str_squish(parent::html($default))
                 : parent::html($default)
                 ;
         });
