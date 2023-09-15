@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace AlexKassel\Fetcher\Traits;
 
-trait CrawlerBugFix
+trait ExistingMethodsEnhancement
 {
-    public bool $nullInsteadOfExceptionIfNodeListIsEmpty = true;
+    public bool $nullInsteadOfExceptionIfNodeListIsEmpty = false;
 
     private function handle(\Closure $closure)
     {

@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace AlexKassel\Fetcher\Traits;
 
-trait CrawlerMoreMethods
+trait NewMethodsForMoreFunctionality
 {
-    public function strSquish(string $string, string $replacement = ' '): string
-    {
-        return preg_replace('/(?:\s|&nbsp;)+/', $replacement, $string);
-    }
-
     public function assoc(\Closure $closure): array
     {
         $parentData = parent::each($closure);
@@ -33,11 +28,11 @@ trait CrawlerMoreMethods
 
     public function textRows(\Closure $callback = null): array
     {
-        $breakHtmlTags = array_map('trim', file(__DIR__ . '/BreakHtmlTags.txt'));
+        $htmlBlockElements = array_map('trim', file(__DIR__ . '/HtmlBlockElements.txt'));
 
         $html = preg_replace('/<(script|style).*?<\/\\1>/si', '', $this->html());
-        $html = str_replace($breakHtmlTags, ' ••• ', $html);
-        $html = $this->strSquish(strip_tags($html));
+        $html = str_replace($htmlBlockElements, ' ••• ', $html);
+        $html = str_squish(strip_tags($html));
 
         $rows = [];
         foreach (explode('•••', $html) as $row) {
