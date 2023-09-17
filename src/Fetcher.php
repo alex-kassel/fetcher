@@ -15,8 +15,8 @@ class Fetcher
     protected Response $response;
 
     public function __construct(
-        protected string $url,
-        protected array|object $data = []
+        public string $url,
+        public array|object $data = []
     ) {
         $this->browser = new HttpBrowser(HttpClient::create([
             'headers' => [
