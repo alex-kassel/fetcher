@@ -8,9 +8,9 @@ trait ExistingMethodsEnhancement
 {
     public bool $nullInsteadOfExceptionIfNodeListIsEmpty = false;
 
-    private function handle(\Closure $closure)
+    private function handle(\Closure $closure): mixed
     {
-        return $this->count() || ! $this->nullInsteadOfExceptionIfNodeListIsEmpty
+        return $this->count() || false === $this->nullInsteadOfExceptionIfNodeListIsEmpty
             ? $closure()
             : null
             ;
