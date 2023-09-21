@@ -28,24 +28,26 @@ trait NewMethodsForMoreFunctionality
 
     public function textRows(\Closure $callback = null): array
     {
-        $htmlBlockElements = array_map('trim', file(__DIR__ . '/HtmlBlockElements.txt'));
+        return $this->handle(function () use ($callback) {
+            $htmlBlockElements = array_map('trim', file(__DIR__ . '/HtmlBlockElements.txt'));
 
-        $html = preg_replace('/<(script|style).*?<\/\\1>/si', '', $this->html());
-        $html = str_replace($htmlBlockElements, ' ••• ', $html);
-        $html = str_squish(strip_tags($html));
+            $html = preg_replace('/<(script|style).*?<\/\\1>/si', '', $this->html());
+            $html = str_replace($htmlBlockElements, ' ••• ', $html);
+            $html = str_squish(strip_tags($html));
 
-        $rows = [];
-        foreach (explode('•••', $html) as $row) {
-            if ($row = trim($row)) {
-                $rows[] = $row;
+            $rows = [];
+            foreach (explode('•••', $html) as $row) {
+                if ($row = trim($row)) {
+                    $rows[] = $row;
+                }
             }
-        }
 
-        if(is_callable($callback)) {
-            return $callback($rows);
-        }
+            if(is_callable($callback)) {
+                return $callback($rows);
+            }
 
-        return $rows;
+            return $rows;
+        }) ?? [];
     }
 
     public function texts(): array

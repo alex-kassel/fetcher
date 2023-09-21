@@ -16,6 +16,13 @@ trait ExistingMethodsEnhancement
             ;
     }
 
+    public function closest(string $selector): ?self
+    {
+        return $this->handle(function () use ($selector) {
+            return parent::closest($selector);
+        }) ?? new static(null);
+    }
+
     public function text(string $default = null, bool $normalizeWhitespace = true): string
     {
         return (string) $this->handle(function () use ($default, $normalizeWhitespace) {
